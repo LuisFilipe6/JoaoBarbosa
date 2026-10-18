@@ -30,6 +30,8 @@ header .brand{font-family:var(--display);font-size:20px;letter-spacing:.2px}
 .lang{display:flex;border:1px solid rgba(233,240,234,.4);border-radius:999px;overflow:hidden}
 .lang button{background:none;border:0;color:var(--paper);padding:4px 12px;font-size:14px}
 .lang button[aria-pressed=true]{background:var(--paper);color:var(--green);font-weight:600}
+.lang select{background:var(--green);color:var(--paper);border:0;padding:4px 10px;font-size:14px}
+.notice{background:#F3E6C4;color:var(--gold-ink);border-radius:4px;padding:10px 12px;font:14px/1.4 var(--ui);margin:0 0 16px}
 
 main{padding:0 0 96px}
 .view{display:none}
@@ -115,10 +117,7 @@ input.code{text-transform:uppercase;letter-spacing:2px;font-weight:600}
 <body>
 <header>
   <span class="brand">João Barbosa</span>
-  <div class="lang" role="group" aria-label="Idioma">
-    <button data-lang="pt" aria-pressed="true">PT</button>
-    <button data-lang="es" aria-pressed="false">ES</button>
-  </div>
+  <div class="lang" role="group" aria-label="Idioma / Language" id="langSwitch"></div>
 </header>
 
 <main>
@@ -177,6 +176,7 @@ input.code{text-transform:uppercase;letter-spacing:2px;font-weight:600}
     <div id="toc" class="wrap" hidden>
       <h2 data-t="bookTitle"></h2>
       <p class="muted" data-t="tocP"></p>
+      <p class="notice" data-t="bookNotice" data-book-notice hidden></p>
       <ul class="chapters" id="chapterList"></ul>
     </div>
   </section>
@@ -302,88 +302,32 @@ input.code{text-transform:uppercase;letter-spacing:2px;font-weight:600}
 </nav>
 
 <script>
-/* ---------- Textos (PT / ES), baseados em joaobarbosa.pt e joaobarbosa.es ---------- */
-const T = {
-pt:{
-  tHome:"Início", tRead:"Ler", tAuthor:"Autor", tShop:"Loja",
-  preorder:"Novo livro, já em pré-encomenda", bookTitle:"Famílias de Dinheiro",
-  heroText:"Muitas pessoas enfrentam problemas financeiros e de relacionamento que afetam profundamente as suas vidas. Imagine se pudesse mudar isso.",
-  startReading:"Começar a ler", seeKit:"Ver o kit",
-  aboutBookH:"Sobre o livro",
-  aboutBook1:"Já se viu envolvido em tramas familiares onde o dinheiro se torna um elemento crucial?",
-  aboutBook2:"Famílias de Dinheiro mergulha nas relações familiares complexas, onde segredos, ambições e desafios se entrelaçam, e mostra como o dinheiro molda o destino destas famílias.",
-  nextBook:"Próximo livro", z13:"Uma aventura literária onde o desconhecido aguarda em cada esquina. Mais do que um livro: uma experiência cheia de enigmas por desvendar.",
-  sealedH:"Este livro está selado", sealedP:"Para começar a leitura precisa do Kit Leitor. Compre o kit ou introduza o código que vem dentro dele.",
-  getKit:"Comprar o kit", haveCode:"Tenho um código",
-  tocP:"Escolha um capítulo. O progresso fica guardado neste telemóvel.",
-  index:"Índice", night:"Noite", day:"Dia", prev:"Anterior", next:"Seguinte", read:"lido",
-  kitH:"Kit Leitor", testMode:"Modo de teste: nenhum pagamento é cobrado",
-  kitName:"Kit Leitor Famílias de Dinheiro",
-  kit1:"Acesso à leitura completa do livro nesta app", kit2:"Código pessoal de desbloqueio", kit3:"Conteúdos extra do autor",
-  charity:"Por cada produto comprado, 4 € vão diretamente para a Liga Portuguesa Contra o Cancro, apoio às crianças.",
-  ownedH:"Já tem o kit", ownedP:"O livro está desbloqueado neste telemóvel.",
-  buyH:"Comprar", name:"Nome", payTest:"Pagar (teste)",
-  orderOk:"Encomenda de teste registada.", yourCode:"O seu código de desbloqueio:",
-  codeH:"Introduzir código do kit", codeP:"O código vem impresso no kit, no formato JB-XXXX-XXXX.",
-  code:"Código", unlock:"Desbloquear livro",
-  errName:"Indique o nome e um email válido.", errCode:"Código inválido. Confirme as letras e tente novamente.",
-  okCode:"Livro desbloqueado.", reset:"Repor app (apagar desbloqueio de teste)",
-  bio1:"Olá! O meu nome é João Lourenço Barbosa e sou escritor.",
-  bio2:"Até aos 24 anos tive tudo para ser feliz, mas estraguei tudo. O meu percurso foi muito doloroso, mas orgulho-me de me ter encontrado. Agora caminho com tranquilidade e escrevo histórias, letras de músicas, guiões de televisão e peças de teatro.",
-  facetsH:"Um autor, várias vozes",
-  f1:"Livros", f1p:"Criar mundos literários que encantam e enriquecem a imaginação dos leitores.",
-  f2:"Letras de músicas", f2p:"Histórias emocionantes contadas em palavras que acompanham melodias.",
-  f3:"Guiões de televisão", f3p:"Conceitos e ideias transformados em narrativas que ganham vida no ecrã.",
-  f4:"Teatro", f4p:"Diálogos e enredos que cativam o público em palco.",
-  streetH:"30 anos na rua",
-  street1:"Artista de rua há 30 anos, o João percorreu as capitais da Europa. O palco dele é a rua e as pessoas que param para o ver.",
-  street2:"Humorista, especialista em stand-up e improviso. Estes vídeos são o seu currículo para a TV Galicia.",
-  contactH:"Contacto", writeMe:"Enviar mensagem",
-  terms:"Termos", privacy:"Privacidade", complaints:"Livro de Reclamações"
-},
-es:{
-  tHome:"Inicio", tRead:"Leer", tAuthor:"Autor", tShop:"Tienda",
-  preorder:"Nuevo libro, ya en preventa", bookTitle:"Familias de Dinero",
-  heroText:"Muchas personas enfrentan problemas financieros y de relaciones que afectan profundamente sus vidas. Imagina que pudieras cambiarlo.",
-  startReading:"Empezar a leer", seeKit:"Ver el kit",
-  aboutBookH:"Sobre el libro",
-  aboutBook1:"¿Alguna vez te has visto envuelto en tramas familiares donde el dinero se vuelve decisivo?",
-  aboutBook2:"Familias de Dinero se adentra en relaciones familiares complejas, donde secretos, ambiciones y desafíos se entrelazan, y muestra cómo el dinero moldea el destino de estas familias.",
-  nextBook:"Próximo libro", z13:"Una aventura literaria donde lo desconocido aguarda en cada esquina. Más que un libro: una experiencia llena de enigmas por descubrir.",
-  sealedH:"Este libro está sellado", sealedP:"Para empezar a leer necesitas el Kit Lector. Compra el kit o introduce el código que viene dentro.",
-  getKit:"Comprar el kit", haveCode:"Tengo un código",
-  tocP:"Elige un capítulo. El progreso se guarda en este móvil.",
-  index:"Índice", night:"Noche", day:"Día", prev:"Anterior", next:"Siguiente", read:"leído",
-  kitH:"Kit Lector", testMode:"Modo de prueba: no se cobra ningún pago",
-  kitName:"Kit Lector Familias de Dinero",
-  kit1:"Acceso a la lectura completa del libro en esta app", kit2:"Código personal de desbloqueo", kit3:"Contenidos extra del autor",
-  charity:"Por cada producto comprado, 4 € van directamente a la Liga Portuguesa Contra el Cáncer, apoyo a los niños.",
-  ownedH:"Ya tienes el kit", ownedP:"El libro está desbloqueado en este móvil.",
-  buyH:"Comprar", name:"Nombre", payTest:"Pagar (prueba)",
-  orderOk:"Pedido de prueba registrado.", yourCode:"Tu código de desbloqueo:",
-  codeH:"Introducir código del kit", codeP:"El código viene impreso en el kit, con el formato JB-XXXX-XXXX.",
-  code:"Código", unlock:"Desbloquear libro",
-  errName:"Indica tu nombre y un email válido.", errCode:"Código no válido. Revisa las letras e inténtalo de nuevo.",
-  okCode:"Libro desbloqueado.", reset:"Restablecer app (borrar desbloqueo de prueba)",
-  bio1:"¡Hola! Mi nombre es João Lourenço Barbosa y soy escritor.",
-  bio2:"Hasta los 24 años tuve todo para ser feliz, pero lo eché a perder. Mi camino fue muy doloroso, pero me enorgullece haberme encontrado. Ahora camino con tranquilidad y escribo historias, letras de canciones, guiones de televisión y obras de teatro.",
-  facetsH:"Un autor, múltiples voces",
-  f1:"Libros", f1p:"Crear mundos literarios que encanten y enriquezcan la imaginación de los lectores.",
-  f2:"Letras de canciones", f2p:"Historias emocionantes en palabras que acompañan melodías.",
-  f3:"Guiones de televisión", f3p:"Conceptos e ideas convertidos en narrativas que cobran vida en pantalla.",
-  f4:"Teatro", f4p:"Diálogos y tramas que cautivan al público en escena.",
-  streetH:"30 años en la calle",
-  street1:"Artista callejero desde hace 30 años, João ha recorrido las capitales de Europa. Su escenario es la calle y la gente que se detiene a verlo.",
-  street2:"Humorista, especialista en stand-up e improvisación. Estos vídeos son su currículum para TV Galicia.",
-  contactH:"Contacto", writeMe:"Enviar mensaje",
-  terms:"Términos", privacy:"Privacidad", complaints:"Libro de Reclamaciones"
-}};
+/* ---------- Línguas ----------
+   Acrescentar uma língua:
+     1. copiar i18n/pt.json para i18n/<código>.json e traduzir os valores
+     2. juntar { code, name } a LANGS
+     3. (opcional) criar book/<código>.json e juntar o código a BOOK_LANGS
+   Chaves em falta caem automaticamente para PT. */
+const LANGS = [
+  { code:"pt", name:"Português" },
+  { code:"fr", name:"Français" },
+  { code:"es", name:"Español" }
+];
+const BOOK_LANGS = ["pt","es"];
+const DEFAULT = "pt";
 
-/* ---------- Conteúdo do livro: SUBSTITUIR pelo texto real ---------- */
-const BOOK = {
-  pt:[1,2,3,4,5].map(n=>({title:"Capítulo "+n, html:`<p class="placeholder">Texto do capítulo ${n} a inserir (array BOOK.pt em index.html, ou ficheiro descarregado após validação — ver README).</p>`})),
-  es:[1,2,3,4,5].map(n=>({title:"Capítulo "+n, html:`<p class="placeholder">Texto del capítulo ${n} pendiente (array BOOK.es en index.html).</p>`}))
-};
+let BASE={}, T={}, BOOK={chapters:[]}, bookLang=DEFAULT;
+const cache={};
+function getJSON(path){
+  if(!cache[path]) cache[path]=fetch(path).then(r=>{ if(!r.ok) throw new Error(path); return r.json(); });
+  return cache[path];
+}
+async function loadLang(code){
+  BASE = await getJSON(`i18n/${DEFAULT}.json`);
+  try { T = code===DEFAULT ? BASE : await getJSON(`i18n/${code}.json`); } catch(e){ T = BASE; }
+  bookLang = BOOK_LANGS.includes(code) ? code : DEFAULT;
+  BOOK = await getJSON(`book/${bookLang}.json`);
+}
 
 /* ---------- Ponte nativa (com fallback para testar no browser) ---------- */
 const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -398,19 +342,39 @@ const Kit = window.KitNative || {
 };
 
 /* ---------- Estado e i18n ---------- */
-let lang = store.get("lang") || ((navigator.language||"pt").startsWith("es") ? "es" : "pt");
+const codes=LANGS.map(l=>l.code), pref=(navigator.language||DEFAULT).slice(0,2).toLowerCase();
+let lang = codes.includes(store.get("lang")) ? store.get("lang") : (codes.includes(pref) ? pref : DEFAULT);
 let fs = +(store.get("reader.fs")||19), dark = store.get("reader.dark")==="1";
 const $=s=>document.querySelector(s);
-const t=k=>T[lang][k]||k;
+const t=k=>T[k] ?? BASE[k] ?? k;
 
+function renderLangSwitch(){
+  const box=$("#langSwitch"); box.innerHTML="";
+  if(LANGS.length>4){
+    const sel=document.createElement("select"); sel.setAttribute("aria-label","Idioma / Language");
+    LANGS.forEach(l=>sel.add(new Option(l.name,l.code,false,l.code===lang)));
+    sel.onchange=()=>setLang(sel.value); box.appendChild(sel);
+  } else {
+    LANGS.forEach(l=>{
+      const b=document.createElement("button");
+      b.textContent=l.code.toUpperCase(); b.dataset.lang=l.code; b.lang=l.code;
+      b.setAttribute("aria-label",l.name); b.onclick=()=>setLang(l.code); box.appendChild(b);
+    });
+  }
+}
+async function setLang(code){
+  lang=code; store.set("lang",lang);
+  await loadLang(lang); applyLang();
+}
 function applyLang(){
   document.documentElement.lang=lang;
   document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t(el.dataset.t));
-  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
+  document.querySelectorAll("#langSwitch button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
+  const sel=$("#langSwitch select"); if(sel) sel.value=lang;
+  document.querySelectorAll("[data-book-notice]").forEach(n=>n.hidden=bookLang===lang);
   $("#themeBtn").textContent=t(dark?"day":"night");
   renderToc(); if(location.hash.startsWith("#cap/")) route();
 }
-document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;store.set("lang",lang);applyLang()});
 
 /* ---------- Router ---------- */
 function show(id,tab){
@@ -461,11 +425,13 @@ function breakSealThen(hash){
 const done=()=>JSON.parse(store.get("reader.done")||"{}");
 function renderToc(){
   const d=done(), ul=$("#chapterList"); ul.innerHTML="";
-  BOOK[lang].forEach((c,i)=>{const li=document.createElement("li");li.innerHTML=`<a href="#cap/${i}"><span>${c.title}</span><span class="done">${d[i]?t("read"):""}</span></a>`;ul.appendChild(li)});
+  BOOK.chapters.forEach((c,i)=>{const li=document.createElement("li");li.innerHTML=`<a href="#cap/${i}"><span>${c.title}</span><span class="done">${d[i]?t("read"):""}</span></a>`;ul.appendChild(li)});
 }
 function openChapter(i){
-  const ch=BOOK[lang]; i=Math.max(0,Math.min(ch.length-1,i||0));
-  $("#chapter").innerHTML=`<h2>${ch[i].title}</h2>`+ch[i].html;
+  const ch=BOOK.chapters; i=Math.max(0,Math.min(ch.length-1,i||0));
+  const note = bookLang!==lang ? `<p class="notice">${t("bookNotice")}</p>` : "";
+  $("#chapter").innerHTML=note+`<h2>${ch[i].title}</h2>`+ch[i].html;
+  $("#chapter").lang=bookLang;
   const d=done(); d[i]=1; store.set("reader.done",JSON.stringify(d)); store.set("reader.last",i);
   $("#prevCh").style.visibility=i>0?"visible":"hidden"; $("#prevCh").href="#cap/"+(i-1);
   $("#nextCh").style.visibility=i<ch.length-1?"visible":"hidden"; $("#nextCh").href="#cap/"+(i+1);
@@ -475,7 +441,7 @@ $("#fsUp").onclick=()=>{fs=Math.min(28,fs+1);store.set("reader.fs",fs);applyRead
 $("#fsDown").onclick=()=>{fs=Math.max(15,fs-1);store.set("reader.fs",fs);applyReader()};
 $("#themeBtn").onclick=()=>{dark=!dark;store.set("reader.dark",dark?"1":"0");applyReader()};
 
-applyLang(); applyReader(); route();
+(async()=>{ await loadLang(lang); renderLangSwitch(); applyLang(); applyReader(); route(); })();
 </script>
 </body>
 </html>

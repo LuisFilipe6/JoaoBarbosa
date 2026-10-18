@@ -1,0 +1,25 @@
+{
+  "title": "Famílias de Dinheiro",
+  "chapters": [
+    {
+      "title": "Capítulo 1",
+      "html": "<p class=\"placeholder\">Texto do capítulo 1 a inserir (assets/book/pt.json).</p>"
+    },
+    {
+      "title": "Capítulo 2",
+      "html": "<p class=\"placeholder\">Texto do capítulo 2 a inserir (assets/book/pt.json).</p>"
+    },
+    {
+      "title": "Capítulo 3",
+      "html": "<p class=\"placeholder\">Texto do capítulo 3 a inserir (assets/book/pt.json).</p>"
+    },
+    {
+      "title": "Capítulo 4",
+      "html": "<p class=\"placeholder\">Texto do capítulo 4 a inserir (assets/book/pt.json).</p>"
+    },
+    {
+      "title": "Capítulo 5",
+      "html": "<p class=\"placeholder\">Texto do capítulo 5 a inserir (assets/book/pt.json).</p>"
+    }
+  ]
+}

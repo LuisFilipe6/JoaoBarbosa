@@ -1,0 +1,25 @@
+{
+  "title": "Familias de Dinero",
+  "chapters": [
+    {
+      "title": "Capítulo 1",
+      "html": "<p class=\"placeholder\">Texto del capítulo 1 pendiente (assets/book/es.json).</p>"
+    },
+    {
+      "title": "Capítulo 2",
+      "html": "<p class=\"placeholder\">Texto del capítulo 2 pendiente (assets/book/es.json).</p>"
+    },
+    {
+      "title": "Capítulo 3",
+      "html": "<p class=\"placeholder\">Texto del capítulo 3 pendiente (assets/book/es.json).</p>"
+    },
+    {
+      "title": "Capítulo 4",
+      "html": "<p class=\"placeholder\">Texto del capítulo 4 pendiente (assets/book/es.json).</p>"
+    },
+    {
+      "title": "Capítulo 5",
+      "html": "<p class=\"placeholder\">Texto del capítulo 5 pendiente (assets/book/es.json).</p>"
+    }
+  ]
+}

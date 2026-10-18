@@ -1,6 +1,6 @@
 # App Android — João Barbosa (v0.1.0-teste)
 
-App bilingue (PT/ES) com o conteúdo de joaobarbosa.pt e joaobarbosa.es.
+App multilíngue (PT/FR/ES) com o conteúdo de joaobarbosa.pt e joaobarbosa.es.
 A leitura de *Famílias de Dinheiro* só abre depois de comprar o **Kit Leitor**
 (neste momento em **modo de teste**: a compra é simulada e não cobra nada).
 
@@ -29,11 +29,26 @@ aceita (ou corre `gradle wrapper --gradle-version 8.9`). Depois *Build → Build
 
 | O quê | Ficheiro |
 |---|---|
-| Textos PT/ES | `app/src/main/assets/index.html` → objeto `T` |
-| Texto do livro | `index.html` → objeto `BOOK` |
+| Textos da interface | `app/src/main/assets/i18n/<língua>.json` |
+| Texto do livro | `app/src/main/assets/book/<língua>.json` |
+| Lista de línguas | `index.html` → `LANGS` e `BOOK_LANGS` |
 | Preço / conteúdo do kit | `index.html` → secção `v-kit` |
 | Modo de teste | `app/build.gradle.kts` → `TEST_MODE` |
 | Códigos | `KitCode.kt` |
+
+## Línguas
+
+Interface em PT, FR e ES; livro em PT e ES. A língua inicial é a do telemóvel,
+se existir na lista, senão PT. A escolha manual fica guardada.
+
+Para acrescentar uma língua (ex.: inglês):
+1. Copiar `i18n/pt.json` para `i18n/en.json` e traduzir os valores (não as chaves).
+2. Em `index.html`, juntar `{ code:"en", name:"English" }` a `LANGS`.
+3. Opcional: criar `book/en.json` e juntar `"en"` a `BOOK_LANGS`.
+
+Chaves em falta caem para PT, por isso uma tradução parcial não parte nada.
+Sem livro traduzido, o leitor mostra a versão PT com um aviso na língua escolhida.
+Com mais de 4 línguas, os botões passam automaticamente a lista suspensa.
 
 ## Antes de passar a produção (importante)
 
