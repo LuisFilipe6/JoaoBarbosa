@@ -12,7 +12,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "0.1.0-teste"
+        versionName = "0.1.5-teste"
         // Modo de teste: compra simulada + código TESTE-2026 aceite.
         // Passar a false quando existir pagamento real e validação no servidor.
         buildConfigField("boolean", "TEST_MODE", "true")
