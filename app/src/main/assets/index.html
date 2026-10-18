@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>João Barbosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Instrument+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1E4D3A; --green-2:#2B6650; --paper:#E9F0EA; --sheet:#F6F9F6;
+  --ink:#15231C; --muted:#56695E; --gold:#C49A3A; --gold-ink:#7A5A14;
+  --line:#C9D6CD; --err:#9B2C2C;
+  --display:"Young Serif",Georgia,"Times New Roman",serif;
+  --ui:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --read:"Literata",Georgia,serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--paper);color:var(--ink);font:16px/1.5 var(--ui);-webkit-tap-highlight-color:transparent}
+a{color:var(--green)}
+img{max-width:100%;display:block}
+button,input{font:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+header{position:sticky;top:0;z-index:5;background:var(--green);color:var(--paper);
+  display:flex;align-items:center;justify-content:space-between;padding:12px 18px}
+header .brand{font-family:var(--display);font-size:20px;letter-spacing:.2px}
+.lang{display:flex;border:1px solid rgba(233,240,234,.4);border-radius:999px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--paper);padding:4px 12px;font-size:14px}
+.lang button[aria-pressed=true]{background:var(--paper);color:var(--green);font-weight:600}
+
+main{padding:0 0 96px}
+.view{display:none}
+.view.on{display:block}
+.wrap{padding:24px 20px;max-width:640px;margin:0 auto}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--sheet);
+  border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr)}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 0 11px;
+  text-decoration:none;color:var(--muted);font-size:12px}
+nav.tabs a svg{width:22px;height:22px}
+nav.tabs a[aria-current=page]{color:var(--green);font-weight:600}
+
+/* Início */
+.hero{background:var(--green);color:var(--paper);padding:28px 20px 36px;overflow:hidden}
+.hero-in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:1fr 132px;gap:18px;align-items:end}
+.hero h1{font-family:var(--display);font-weight:400;font-size:40px;line-height:1.05;margin:6px 0 14px}
+.hero p{margin:0 0 18px;color:#CFE0D5;max-width:34ch}
+.hero .status{font-size:14px;color:var(--gold)}
+.cover{aspect-ratio:2/3;border-radius:3px;background:#2B6650 center/cover;box-shadow:0 14px 30px rgba(0,0,0,.35);transform:rotate(3deg)}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{appearance:none;border:0;border-radius:999px;padding:12px 20px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.gold{background:var(--gold);color:#1C1406}
+.btn.ghost{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor}
+.btn.green{background:var(--green);color:var(--paper)}
+.btn:disabled{opacity:.5}
+
+h2{font-family:var(--display);font-weight:400;font-size:28px;line-height:1.15;margin:0 0 12px}
+h3{font-size:17px;margin:20px 0 4px}
+.lead{font-size:18px}
+.muted{color:var(--muted)}
+.block{padding:22px 0;border-bottom:1px solid var(--line)}
+.block:last-child{border-bottom:0}
+.facets{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;margin-top:10px}
+.facets h3{margin:0 0 2px;font-size:15px}
+.facets p{margin:0;font-size:14px;color:var(--muted)}
+.next{background:var(--ink);color:var(--paper);border-radius:4px;padding:22px}
+.next .z{font-family:var(--display);font-size:56px;line-height:1;color:var(--gold)}
+.next p{color:#B9C8BE;margin:10px 0 0}
+.portrait{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:4px;background:var(--line)}
+video{width:100%;border-radius:4px;background:#000;margin-top:12px}
+
+/* Selo (porta de entrada da leitura) */
+.seal-stage{text-align:center;padding:36px 20px 8px}
+.seal{width:168px;height:168px;margin:0 auto 22px;position:relative}
+.seal svg{width:100%;height:100%}
+.seal.broken .half-l{transform:translate(-14px,6px) rotate(-14deg);opacity:0}
+.seal.broken .half-r{transform:translate(14px,6px) rotate(14deg);opacity:0}
+.seal .half-l,.seal .half-r{transition:transform .7s cubic-bezier(.3,.7,.2,1),opacity .7s .2s;transform-origin:center}
+@media (prefers-reduced-motion:reduce){.seal .half-l,.seal .half-r{transition:none}}
+.seal-stage p{max-width:32ch;margin:0 auto 22px}
+
+/* Kit */
+.kit{background:var(--sheet);border:1px solid var(--line);border-radius:6px;padding:20px}
+.kit .price{font-family:var(--display);font-size:34px}
+.kit ul{padding-left:20px;margin:10px 0}
+.test-flag{display:inline-block;background:#F3E6C4;color:var(--gold-ink);border-radius:3px;padding:2px 8px;font-size:13px;font-weight:600}
+.charity{border-left:3px solid var(--gold);padding:4px 0 4px 12px;margin:16px 0 0;font-size:15px}
+label{display:block;font-size:14px;font-weight:500;margin:14px 0 4px}
+input[type=text],input[type=email]{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+input.code{text-transform:uppercase;letter-spacing:2px;font-weight:600}
+.msg{margin:12px 0 0;font-size:15px}
+.msg.err{color:var(--err)}
+.receipt{background:#fff;border:1px dashed var(--green);border-radius:6px;padding:16px;margin-top:16px}
+.receipt .c{font:600 22px/1.2 var(--ui);letter-spacing:2px;color:var(--green)}
+
+/* Leitor */
+.chapters{list-style:none;padding:0;margin:8px 0 0}
+.chapters li a{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.chapters .done{color:var(--muted);font-size:14px}
+.reader{background:var(--sheet);min-height:100vh}
+.reader.dark{background:#17201B;color:#D9E3DC}
+.reader-bar{position:sticky;top:52px;display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px 16px;background:inherit;border-bottom:1px solid var(--line)}
+.reader.dark .reader-bar{border-color:#2D3A33}
+.reader-bar button{background:none;border:1px solid var(--line);border-radius:6px;padding:6px 10px;color:inherit}
+.reader article{font-family:var(--read);font-size:var(--fs,19px);line-height:1.7;max-width:36em;margin:0 auto;padding:24px 22px 40px}
+.reader article h2{font-family:var(--display)}
+.reader .pager{display:flex;justify-content:space-between;max-width:36em;margin:0 auto;padding:0 22px 40px}
+.placeholder{border:1px dashed var(--muted);padding:12px;font-family:var(--ui);font-size:14px;color:var(--muted)}
+.foot{font-size:13px;color:var(--muted);padding-top:18px}
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">João Barbosa</span>
+  <div class="lang" role="group" aria-label="Idioma">
+    <button data-lang="pt" aria-pressed="true">PT</button>
+    <button data-lang="es" aria-pressed="false">ES</button>
+  </div>
+</header>
+
+<main>
+  <!-- INÍCIO -->
+  <section class="view" id="v-home">
+    <div class="hero">
+      <div class="hero-in">
+        <div>
+          <span class="status" data-t="preorder"></span>
+          <h1 data-t="bookTitle"></h1>
+          <p data-t="heroText"></p>
+          <div class="btns">
+            <a class="btn gold" href="#ler" data-t="startReading"></a>
+            <a class="btn ghost" href="#kit" data-t="seeKit"></a>
+          </div>
+        </div>
+        <div class="cover" style="background-image:url('https://joaobarbosa.pt/wp-content/uploads/2025/02/livro-familias-poder.jpg')" role="img" aria-label="Capa"></div>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="block">
+        <h2 data-t="aboutBookH"></h2>
+        <p class="lead" data-t="aboutBook1"></p>
+        <p data-t="aboutBook2"></p>
+      </div>
+      <div class="block">
+        <div class="next">
+          <span class="muted" data-t="nextBook"></span>
+          <div class="z">Z13É</div>
+          <p data-t="z13"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LER (bloqueado / desbloqueado) -->
+  <section class="view" id="v-ler">
+    <div id="gate">
+      <div class="seal-stage">
+        <div class="seal" id="seal" aria-hidden="true">
+          <svg viewBox="0 0 168 168">
+            <g class="half-l"><path d="M84 6 C40 6 6 40 6 84 s34 78 78 78 L78 120 90 96 76 70 88 44Z" fill="#C49A3A"/></g>
+            <g class="half-r"><path d="M84 6 C128 6 162 40 162 84 s-34 78 -78 78 L78 120 90 96 76 70 88 44Z" fill="#B88C2E"/></g>
+            <circle cx="84" cy="84" r="50" fill="none" stroke="#7A5A14" stroke-width="2" opacity=".55"/>
+            <text x="84" y="98" text-anchor="middle" font-family="Young Serif, Georgia, serif" font-size="44" fill="#4E3A0C">JB</text>
+          </svg>
+        </div>
+        <h2 data-t="sealedH"></h2>
+        <p class="muted" data-t="sealedP"></p>
+        <div class="btns" style="justify-content:center">
+          <a class="btn green" href="#kit" data-t="getKit"></a>
+          <a class="btn ghost" href="#kit/codigo" data-t="haveCode"></a>
+        </div>
+      </div>
+    </div>
+    <div id="toc" class="wrap" hidden>
+      <h2 data-t="bookTitle"></h2>
+      <p class="muted" data-t="tocP"></p>
+      <ul class="chapters" id="chapterList"></ul>
+    </div>
+  </section>
+
+  <!-- LEITOR -->
+  <section class="view reader" id="v-cap">
+    <div class="reader-bar">
+      <a href="#ler" class="btn ghost" style="padding:6px 12px" data-t="index"></a>
+      <div style="display:flex;gap:6px">
+        <button id="fsDown" aria-label="Diminuir letra">A−</button>
+        <button id="fsUp" aria-label="Aumentar letra">A+</button>
+        <button id="themeBtn" data-t="night"></button>
+      </div>
+    </div>
+    <article id="chapter"></article>
+    <div class="pager">
+      <a class="btn ghost" id="prevCh" data-t="prev"></a>
+      <a class="btn green" id="nextCh" data-t="next"></a>
+    </div>
+  </section>
+
+  <!-- KIT -->
+  <section class="view" id="v-kit">
+    <div class="wrap">
+      <h2 data-t="kitH"></h2>
+      <div class="kit">
+        <span class="test-flag" id="testFlag" data-t="testMode"></span>
+        <h3 data-t="kitName"></h3>
+        <div class="price">24,90 €</div>
+        <ul>
+          <li data-t="kit1"></li>
+          <li data-t="kit2"></li>
+          <li data-t="kit3"></li>
+        </ul>
+        <p class="charity" data-t="charity"></p>
+      </div>
+
+      <div id="kitOwned" class="block" hidden>
+        <h3 data-t="ownedH"></h3>
+        <p data-t="ownedP"></p>
+        <a class="btn green" href="#ler" data-t="startReading"></a>
+      </div>
+
+      <div id="kitBuy">
+        <div class="block">
+          <h3 data-t="buyH"></h3>
+          <label for="bName" data-t="name"></label>
+          <input type="text" id="bName" autocomplete="name">
+          <label for="bEmail">Email</label>
+          <input type="email" id="bEmail" autocomplete="email">
+          <div class="btns" style="margin-top:16px"><button class="btn gold" id="buyBtn" data-t="payTest"></button></div>
+          <p class="msg" id="buyMsg" role="status"></p>
+          <div class="receipt" id="receipt" hidden>
+            <div data-t="orderOk"></div>
+            <div class="muted" id="orderId"></div>
+            <p style="margin:10px 0 4px" data-t="yourCode"></p>
+            <div class="c" id="orderCode"></div>
+            <div class="btns" style="margin-top:14px"><a class="btn green" href="#ler" data-t="startReading"></a></div>
+          </div>
+        </div>
+        <div class="block" id="codigo">
+          <h3 data-t="codeH"></h3>
+          <p class="muted" data-t="codeP"></p>
+          <label for="codeIn" data-t="code"></label>
+          <input type="text" id="codeIn" class="code" placeholder="JB-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
+          <div class="btns" style="margin-top:16px"><button class="btn green" id="redeemBtn" data-t="unlock"></button></div>
+          <p class="msg" id="codeMsg" role="status"></p>
+        </div>
+      </div>
+      <p class="foot" id="resetWrap" hidden><a href="#" id="resetBtn" data-t="reset"></a></p>
+    </div>
+  </section>
+
+  <!-- AUTOR -->
+  <section class="view" id="v-autor">
+    <div class="wrap">
+      <img class="portrait" src="https://joaobarbosa.pt/wp-content/uploads/2023/05/mais.jpg" alt="João Lourenço Barbosa">
+      <div class="block">
+        <h2>João Lourenço Barbosa</h2>
+        <p class="lead" data-t="bio1"></p>
+        <p data-t="bio2"></p>
+      </div>
+      <div class="block">
+        <h2 data-t="facetsH"></h2>
+        <div class="facets">
+          <div><h3 data-t="f1"></h3><p data-t="f1p"></p></div>
+          <div><h3 data-t="f2"></h3><p data-t="f2p"></p></div>
+          <div><h3 data-t="f3"></h3><p data-t="f3p"></p></div>
+          <div><h3 data-t="f4"></h3><p data-t="f4p"></p></div>
+        </div>
+      </div>
+      <div class="block">
+        <h2 data-t="streetH"></h2>
+        <p data-t="street1"></p>
+        <p data-t="street2"></p>
+        <video controls preload="none" src="https://joaobarbosa.es/videos/intro_tvgalicia_2.webm"></video>
+        <video controls preload="none" src="https://joaobarbosa.es/videos/intro2_tvgalicia.webm"></video>
+      </div>
+      <div class="block">
+        <h2 data-t="contactH"></h2>
+        <p>Travessa do Ribeiro Nº 14, Ribeiro Merufe<br>4950-327 Monção, Portugal</p>
+        <div class="btns">
+          <a class="btn green" href="https://joaobarbosa.pt/contacto/" data-t="writeMe"></a>
+          <a class="btn ghost" href="https://www.youtube.com/channel/UCpcTq9z0LHWfxKeUE0aAkfQ">YouTube</a>
+        </div>
+        <p class="foot">
+          <a href="https://joaobarbosa.pt">joaobarbosa.pt</a> &nbsp; <a href="https://joaobarbosa.es">joaobarbosa.es</a><br>
+          <a href="https://joaobarbosa.pt/termos-condicoes/" data-t="terms"></a> &nbsp;
+          <a href="https://joaobarbosa.pt/politica-privacidade/" data-t="privacy"></a> &nbsp;
+          <a href="https://joaobarbosa.pt/livro-reclamacoes/" data-t="complaints"></a>
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Navegação">
+  <a href="#inicio" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span data-t="tHome"></span></a>
+  <a href="#ler" data-tab="ler"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/></svg><span data-t="tRead"></span></a>
+  <a href="#kit" data-tab="kit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h18v12H3z"/><path d="M3 8l2-4h14l2 4M12 8v12"/></svg><span>Kit</span></a>
+  <a href="#autor" data-tab="autor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg><span data-t="tAuthor"></span></a>
+  <a href="https://joaobarbosa.pt/loja/" data-tab="loja"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h14l-1 13H6z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span data-t="tShop"></span></a>
+</nav>
+
+<script>
+/* ---------- Textos (PT / ES), baseados em joaobarbosa.pt e joaobarbosa.es ---------- */
+const T = {
+pt:{
+  tHome:"Início", tRead:"Ler", tAuthor:"Autor", tShop:"Loja",
+  preorder:"Novo livro, já em pré-encomenda", bookTitle:"Famílias de Dinheiro",
+  heroText:"Muitas pessoas enfrentam problemas financeiros e de relacionamento que afetam profundamente as suas vidas. Imagine se pudesse mudar isso.",
+  startReading:"Começar a ler", seeKit:"Ver o kit",
+  aboutBookH:"Sobre o livro",
+  aboutBook1:"Já se viu envolvido em tramas familiares onde o dinheiro se torna um elemento crucial?",
+  aboutBook2:"Famílias de Dinheiro mergulha nas relações familiares complexas, onde segredos, ambições e desafios se entrelaçam, e mostra como o dinheiro molda o destino destas famílias.",
+  nextBook:"Próximo livro", z13:"Uma aventura literária onde o desconhecido aguarda em cada esquina. Mais do que um livro: uma experiência cheia de enigmas por desvendar.",
+  sealedH:"Este livro está selado", sealedP:"Para começar a leitura precisa do Kit Leitor. Compre o kit ou introduza o código que vem dentro dele.",
+  getKit:"Comprar o kit", haveCode:"Tenho um código",
+  tocP:"Escolha um capítulo. O progresso fica guardado neste telemóvel.",
+  index:"Índice", night:"Noite", day:"Dia", prev:"Anterior", next:"Seguinte", read:"lido",
+  kitH:"Kit Leitor", testMode:"Modo de teste: nenhum pagamento é cobrado",
+  kitName:"Kit Leitor Famílias de Dinheiro",
+  kit1:"Acesso à leitura completa do livro nesta app", kit2:"Código pessoal de desbloqueio", kit3:"Conteúdos extra do autor",
+  charity:"Por cada produto comprado, 4 € vão diretamente para a Liga Portuguesa Contra o Cancro, apoio às crianças.",
+  ownedH:"Já tem o kit", ownedP:"O livro está desbloqueado neste telemóvel.",
+  buyH:"Comprar", name:"Nome", payTest:"Pagar (teste)",
+  orderOk:"Encomenda de teste registada.", yourCode:"O seu código de desbloqueio:",
+  codeH:"Introduzir código do kit", codeP:"O código vem impresso no kit, no formato JB-XXXX-XXXX.",
+  code:"Código", unlock:"Desbloquear livro",
+  errName:"Indique o nome e um email válido.", errCode:"Código inválido. Confirme as letras e tente novamente.",
+  okCode:"Livro desbloqueado.", reset:"Repor app (apagar desbloqueio de teste)",
+  bio1:"Olá! O meu nome é João Lourenço Barbosa e sou escritor.",
+  bio2:"Até aos 24 anos tive tudo para ser feliz, mas estraguei tudo. O meu percurso foi muito doloroso, mas orgulho-me de me ter encontrado. Agora caminho com tranquilidade e escrevo histórias, letras de músicas, guiões de televisão e peças de teatro.",
+  facetsH:"Um autor, várias vozes",
+  f1:"Livros", f1p:"Criar mundos literários que encantam e enriquecem a imaginação dos leitores.",
+  f2:"Letras de músicas", f2p:"Histórias emocionantes contadas em palavras que acompanham melodias.",
+  f3:"Guiões de televisão", f3p:"Conceitos e ideias transformados em narrativas que ganham vida no ecrã.",
+  f4:"Teatro", f4p:"Diálogos e enredos que cativam o público em palco.",
+  streetH:"30 anos na rua",
+  street1:"Artista de rua há 30 anos, o João percorreu as capitais da Europa. O palco dele é a rua e as pessoas que param para o ver.",
+  street2:"Humorista, especialista em stand-up e improviso. Estes vídeos são o seu currículo para a TV Galicia.",
+  contactH:"Contacto", writeMe:"Enviar mensagem",
+  terms:"Termos", privacy:"Privacidade", complaints:"Livro de Reclamações"
+},
+es:{
+  tHome:"Inicio", tRead:"Leer", tAuthor:"Autor", tShop:"Tienda",
+  preorder:"Nuevo libro, ya en preventa", bookTitle:"Familias de Dinero",
+  heroText:"Muchas personas enfrentan problemas financieros y de relaciones que afectan profundamente sus vidas. Imagina que pudieras cambiarlo.",
+  startReading:"Empezar a leer", seeKit:"Ver el kit",
+  aboutBookH:"Sobre el libro",
+  aboutBook1:"¿Alguna vez te has visto envuelto en tramas familiares donde el dinero se vuelve decisivo?",
+  aboutBook2:"Familias de Dinero se adentra en relaciones familiares complejas, donde secretos, ambiciones y desafíos se entrelazan, y muestra cómo el dinero moldea el destino de estas familias.",
+  nextBook:"Próximo libro", z13:"Una aventura literaria donde lo desconocido aguarda en cada esquina. Más que un libro: una experiencia llena de enigmas por descubrir.",
+  sealedH:"Este libro está sellado", sealedP:"Para empezar a leer necesitas el Kit Lector. Compra el kit o introduce el código que viene dentro.",
+  getKit:"Comprar el kit", haveCode:"Tengo un código",
+  tocP:"Elige un capítulo. El progreso se guarda en este móvil.",
+  index:"Índice", night:"Noche", day:"Día", prev:"Anterior", next:"Siguiente", read:"leído",
+  kitH:"Kit Lector", testMode:"Modo de prueba: no se cobra ningún pago",
+  kitName:"Kit Lector Familias de Dinero",
+  kit1:"Acceso a la lectura completa del libro en esta app", kit2:"Código personal de desbloqueo", kit3:"Contenidos extra del autor",
+  charity:"Por cada producto comprado, 4 € van directamente a la Liga Portuguesa Contra el Cáncer, apoyo a los niños.",
+  ownedH:"Ya tienes el kit", ownedP:"El libro está desbloqueado en este móvil.",
+  buyH:"Comprar", name:"Nombre", payTest:"Pagar (prueba)",
+  orderOk:"Pedido de prueba registrado.", yourCode:"Tu código de desbloqueo:",
+  codeH:"Introducir código del kit", codeP:"El código viene impreso en el kit, con el formato JB-XXXX-XXXX.",
+  code:"Código", unlock:"Desbloquear libro",
+  errName:"Indica tu nombre y un email válido.", errCode:"Código no válido. Revisa las letras e inténtalo de nuevo.",
+  okCode:"Libro desbloqueado.", reset:"Restablecer app (borrar desbloqueo de prueba)",
+  bio1:"¡Hola! Mi nombre es João Lourenço Barbosa y soy escritor.",
+  bio2:"Hasta los 24 años tuve todo para ser feliz, pero lo eché a perder. Mi camino fue muy doloroso, pero me enorgullece haberme encontrado. Ahora camino con tranquilidad y escribo historias, letras de canciones, guiones de televisión y obras de teatro.",
+  facetsH:"Un autor, múltiples voces",
+  f1:"Libros", f1p:"Crear mundos literarios que encanten y enriquezcan la imaginación de los lectores.",
+  f2:"Letras de canciones", f2p:"Historias emocionantes en palabras que acompañan melodías.",
+  f3:"Guiones de televisión", f3p:"Conceptos e ideas convertidos en narrativas que cobran vida en pantalla.",
+  f4:"Teatro", f4p:"Diálogos y tramas que cautivan al público en escena.",
+  streetH:"30 años en la calle",
+  street1:"Artista callejero desde hace 30 años, João ha recorrido las capitales de Europa. Su escenario es la calle y la gente que se detiene a verlo.",
+  street2:"Humorista, especialista en stand-up e improvisación. Estos vídeos son su currículum para TV Galicia.",
+  contactH:"Contacto", writeMe:"Enviar mensaje",
+  terms:"Términos", privacy:"Privacidad", complaints:"Libro de Reclamaciones"
+}};
+
+/* ---------- Conteúdo do livro: SUBSTITUIR pelo texto real ---------- */
+const BOOK = {
+  pt:[1,2,3,4,5].map(n=>({title:"Capítulo "+n, html:`<p class="placeholder">Texto do capítulo ${n} a inserir (array BOOK.pt em index.html, ou ficheiro descarregado após validação — ver README).</p>`})),
+  es:[1,2,3,4,5].map(n=>({title:"Capítulo "+n, html:`<p class="placeholder">Texto del capítulo ${n} pendiente (array BOOK.es en index.html).</p>`}))
+};
+
+/* ---------- Ponte nativa (com fallback para testar no browser) ---------- */
+const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const chk=b=>{let n=0;[...b].forEach((c,i)=>{n=(n*31+(AL.indexOf(c)+1)*(i+7))%1024});return AL[n>>5]+AL[n%32]};
+const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+const Kit = window.KitNative || {
+  isTestMode:()=>true,
+  isUnlocked:()=>!!store.get("kit.code"),
+  redeem(c){const s=c.toUpperCase().replace(/[^A-Z0-9]/g,"");const ok=s==="TESTE2026"||(s.length===10&&s.startsWith("JB")&&chk(s.slice(2,8))===s.slice(8));if(ok)store.set("kit.code",s);return ok},
+  testPurchase(){let b="";for(let i=0;i<6;i++)b+=AL[Math.floor(Math.random()*32)];const c=b+chk(b);store.set("kit.code","JB"+c);return JSON.stringify({ok:true,order:"TESTE-"+String(Date.now()).slice(-6),code:"JB-"+c.slice(0,4)+"-"+c.slice(4)})},
+  reset(){store.del("kit.code")}
+};
+
+/* ---------- Estado e i18n ---------- */
+let lang = store.get("lang") || ((navigator.language||"pt").startsWith("es") ? "es" : "pt");
+let fs = +(store.get("reader.fs")||19), dark = store.get("reader.dark")==="1";
+const $=s=>document.querySelector(s);
+const t=k=>T[lang][k]||k;
+
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t(el.dataset.t));
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
+  $("#themeBtn").textContent=t(dark?"day":"night");
+  renderToc(); if(location.hash.startsWith("#cap/")) route();
+}
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{lang=b.dataset.lang;store.set("lang",lang);applyLang()});
+
+/* ---------- Router ---------- */
+function show(id,tab){
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===id));
+  document.querySelectorAll("nav.tabs a").forEach(a=>{if(a.dataset.tab===tab)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  window.scrollTo(0,0);
+}
+function route(){
+  const h=location.hash.slice(1)||"inicio";
+  const unlocked=Kit.isUnlocked();
+  if(h==="ler"){ $("#gate").hidden=unlocked; $("#toc").hidden=!unlocked; if(unlocked)renderToc(); show("v-ler","ler"); }
+  else if(h.startsWith("cap/")){ if(!unlocked){location.replace("#ler");return} openChapter(+h.split("/")[1]); show("v-cap","ler"); }
+  else if(h.startsWith("kit")){ renderKit(); show("v-kit","kit"); if(h==="kit/codigo")setTimeout(()=>$("#codigo").scrollIntoView(),0); }
+  else if(h==="autor") show("v-autor","autor");
+  else show("v-home","home");
+}
+window.addEventListener("hashchange",route);
+window.appBack=()=>{ if(location.hash&&location.hash!=="#inicio"){history.back();return true} return false; };
+
+/* ---------- Kit ---------- */
+function renderKit(){
+  const u=Kit.isUnlocked(), test=Kit.isTestMode();
+  $("#kitOwned").hidden=!u; $("#kitBuy").hidden=u;
+  $("#testFlag").hidden=!test; $("#buyBtn").disabled=!test;
+  $("#resetWrap").hidden=!(test&&u);
+}
+$("#buyBtn").onclick=()=>{
+  const n=$("#bName").value.trim(), e=$("#bEmail").value.trim(), m=$("#buyMsg");
+  if(!n||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){m.className="msg err";m.textContent=t("errName");return}
+  const r=JSON.parse(Kit.testPurchase(n,e));
+  if(!r.ok)return;
+  m.textContent=""; $("#orderId").textContent=r.order; $("#orderCode").textContent=r.code; $("#receipt").hidden=false;
+  $("#buyBtn").disabled=true;
+};
+$("#redeemBtn").onclick=()=>{
+  const m=$("#codeMsg");
+  if(Kit.redeem($("#codeIn").value)){ m.className="msg"; m.textContent=t("okCode"); breakSealThen("#ler"); }
+  else { m.className="msg err"; m.textContent=t("errCode"); }
+};
+$("#resetBtn").onclick=e=>{e.preventDefault();Kit.reset();store.del("reader.done");store.del("reader.last");$("#receipt").hidden=true;$("#seal").classList.remove("broken");renderKit()};
+function breakSealThen(hash){
+  location.hash=hash;
+  requestAnimationFrame(()=>{ $("#gate").hidden=false; $("#toc").hidden=true; $("#seal").classList.add("broken");
+    setTimeout(()=>{$("#gate").hidden=true;$("#toc").hidden=false;renderToc()}, matchMedia("(prefers-reduced-motion: reduce)").matches?0:1100); });
+}
+
+/* ---------- Leitor ---------- */
+const done=()=>JSON.parse(store.get("reader.done")||"{}");
+function renderToc(){
+  const d=done(), ul=$("#chapterList"); ul.innerHTML="";
+  BOOK[lang].forEach((c,i)=>{const li=document.createElement("li");li.innerHTML=`<a href="#cap/${i}"><span>${c.title}</span><span class="done">${d[i]?t("read"):""}</span></a>`;ul.appendChild(li)});
+}
+function openChapter(i){
+  const ch=BOOK[lang]; i=Math.max(0,Math.min(ch.length-1,i||0));
+  $("#chapter").innerHTML=`<h2>${ch[i].title}</h2>`+ch[i].html;
+  const d=done(); d[i]=1; store.set("reader.done",JSON.stringify(d)); store.set("reader.last",i);
+  $("#prevCh").style.visibility=i>0?"visible":"hidden"; $("#prevCh").href="#cap/"+(i-1);
+  $("#nextCh").style.visibility=i<ch.length-1?"visible":"hidden"; $("#nextCh").href="#cap/"+(i+1);
+}
+function applyReader(){ $("#v-cap").style.setProperty("--fs",fs+"px"); $("#v-cap").classList.toggle("dark",dark); $("#themeBtn").textContent=t(dark?"day":"night"); }
+$("#fsUp").onclick=()=>{fs=Math.min(28,fs+1);store.set("reader.fs",fs);applyReader()};
+$("#fsDown").onclick=()=>{fs=Math.max(15,fs-1);store.set("reader.fs",fs);applyReader()};
+$("#themeBtn").onclick=()=>{dark=!dark;store.set("reader.dark",dark?"1":"0");applyReader()};
+
+applyLang(); applyReader(); route();
+</script>
+</body>
+</html>

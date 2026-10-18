@@ -1,0 +1,10 @@
+<resources>
+    <color name="green">#1E4D3A</color>
+    <color name="paper">#E9F0EA</color>
+    <style name="Theme.JB" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/green</item>
+        <item name="android:navigationBarColor">@color/green</item>
+        <item name="android:windowBackground">@color/paper</item>
+        <item name="android:colorAccent">@color/green</item>
+    </style>
+</resources>
